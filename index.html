@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>¡Feliz Cumpleaños!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000000; /* Color negro absoluto */
+      font-family: 'Pacifico', cursive;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .message-container {
+      text-align: center;
+      color: #fff;
+      z-index: 10;
+      font-family: 'Pacifico', cursive;
+    }
+
+    .message-container h1 {
+      font-size: 3rem;
+      color: #ff69b4;
+      margin-bottom: 20px;
+    }
+
+    .message-container button {
+      font-size: 1.5rem;
+      padding: 10px 20px;
+      background-color: #ff69b4;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 12px;
+    }
+
+    .message-container button:hover {
+      background-color: #ff4d6d;
+    }
+
+    .birthday-card {
+      z-index: 5; /* Asegura que la tarjeta esté encima de los corazones */
+      text-align: center;
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 2rem;
+      box-shadow: 0 0 30px rgba(255, 105, 180, 0.5);
+      max-width: 400px;
+      width: 90%;
+      max-height: 600px;
+      overflow: hidden;
+      display: none; /* Oculta la tarjeta al principio */
+    }
+
+    .birthday-card h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3rem;
+      color: #ff69b4;
+      margin: 0.5rem 0;
+    }
+
+    .birthday-card img {
+      width: 150px;
+      margin: 1rem 0;
+    }
+
+    .birthday-card p {
+      font-size: 1.3rem;
+      color: #ccc;
+      margin: 0 0 1rem 0;
+      text-shadow: 0px 0px 15px yellow; /* Efecto de iluminación amarillo */
+    }
+
+    .balloons {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0; /* Los corazones se muestran detrás de todo el contenido */
+      pointer-events: none;
+    }
+
+    .heart {
+      width: 60px;
+      height: 60px;
+      position: absolute;
+      bottom: -100px;
+      background-color: red;
+      transform: rotate(-45deg);
+      animation: float 10s infinite ease-in-out;
+      filter: drop-shadow(0 0 10px white);
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      width: 60px;
+      height: 60px;
+      background-color: inherit;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .heart::before {
+      top: -30px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: 30px;
+      top: 0;
+    }
+
+    @keyframes float {
+      0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 1; }
+      100% { transform: translateX(100px) translateY(-100vh) rotate(-45deg); opacity: 0; }
+    }
+
+    .gift-button {
+      display: inline-block;
+      width: 150px;
+      height: 150px;
+      position: relative;
+      margin-top: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .gift-button:hover {
+      transform: scale(1.1);
+    }
+
+    .gift-button img {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+    }
+
+    /* Estilos para la página de sorpresa */
+    .surprise-page {
+      background-color: #ffffff; /* Fondo blanco para simular una carta */
+      color: black; /* Color de texto negro */
+      text-align: center;
+      z-index: 10;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 0 30px 15px rgba(255, 105, 180, 0.8); /* Iluminación rosada alrededor de la tarjeta */
+      width: 400px;
+      max-width: 90%;
+      border-radius: 15px; /* Bordes redondeados */
+    }
+
+    .surprise-page h1 {
+      font-size: 2.5rem;
+      color: #ff69b4;
+      margin-bottom: 15px;
+    }
+
+    .surprise-page p {
+      font-size: 1.4rem;
+      line-height: 1.6;
+    }
+
+    /* Estilos para las imágenes fuera de la tarjeta */
+    .imagenes {
+      position: fixed;
+      top: 50%;
+      left: 0;
+      right: 0;
+      z-index: 1; /* Las imágenes estarán sobre el fondo */
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      transform: translateY(-50%); /* Centra verticalmente */
+      padding: -10 9px; /* Espacio entre las imágenes y el borde */
+    }
+
+    .imagenes img {
+      width: 150px; /* Tamaño pequeño para las imágenes */
+      height: 150px;
+      border-radius: 10px; /* Bordes redondeados */
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Audio oculto que se reproduce en todas las páginas sin interrupción -->
+  <audio id="audio" loop autoplay>
+    <source src="cumple.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio HTML5.
+  </audio>
+
+  <!-- Contenedor del mensaje inicial -->
+  <div class="message-container" id="message-container">
+    <h1>¡Espero que te guste!</h1>
+    <button onclick="mostrarContenido()">TE AMO</button>
+  </div>
+
+  <!-- Contenido de la tarjeta de cumpleaños (inicialmente oculto) -->
+  <div class="birthday-card" id="birthday-card">
+    <h1>Feliz cumpleaños, mi amor</h1>
+    <img src="200.webp" alt="Ositos abrazando">
+    <p>Que cada uno de tus sueños más dulces se haga realidad 🌟, hoy, mañana y siempre 🌙, porque te mereces todo lo mejor que la vida pueda ofrecerte 💖✨ 💖</p> <!-- Texto con efecto de iluminación amarillo -->
+
+    <!-- Botón de regalo que cambia el contenido sin recargar la página -->
+    <div class="gift-button" onclick="cambiarPagina()">
+      <img src="regalo.png" alt="Botón de regalo">
+    </div>
+  </div>
+
+  <div class="balloons">
+    <script>
+      const colors = ['#ff4d6d', '#ff69b4', '#f472b6', '#e11d48'];
+      for (let i = 0; i < 100; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDuration = (8 + Math.random() * 5) + 's';
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        heart.style.backgroundColor = color;
+        heart.style.filter = 'drop-shadow(0 0 15px ' + color + ')';
+        document.querySelector('.balloons').appendChild(heart);
+      }
+    </script>
+  </div>
+
+  <script>
+    function mostrarContenido() {
+      // Reproducir música
+      const audio = document.getElementById("audio");
+      audio.play();
+
+      // Ocultar mensaje y mostrar tarjeta
+      document.getElementById("message-container").style.display = "none";
+      document.getElementById("birthday-card").style.display = "block";
+    }
+
+    function cambiarPagina() {
+      // Ocultar la tarjeta de cumpleaños
+      document.getElementById("birthday-card").style.display = "none";
+
+      // Crear el contenido de la página de sorpresa
+      const surprisePage = document.createElement("div");
+      surprisePage.classList.add("surprise-page");
+
+      surprisePage.innerHTML = `
+        <h1>¡Sorpresa! 🎁</h1>
+        <p>💖💖Esto es solo para ti, mi amor💖💖  
+            💖🥰¡Te amo con todo mi corazón!🥰💖  
+            "Feliz cumpleaños, mi amor. Cada día contigo es un regalo, y hoy celebro tu vida, tu sonrisa y todo lo que eres. Que este nuevo año te traiga más amor, felicidad y sueños cumplidos. Te amo más de lo que las palabras pueden expresar.</p>
+      `;
+
+      // Insertar la página de sorpresa en el body
+      document.body.appendChild(surprisePage);
+
+      // Insertar las imágenes como botones fuera de la tarjeta
+      const imagenesDiv = document.createElement("div");
+      imagenesDiv.classList.add("imagenes");
+
+      const img1 = document.createElement("button");
+      img1.innerHTML = `<img src="oso1.jpg" alt="Oso 1">`;
+      img1.onclick = function () {
+  window.location.href = "peliculas.html";
+};
+      imagenesDiv.appendChild(img1);
+
+      const img2 = document.createElement("button");
+      img2.innerHTML = `<img src="oso2.jpg" alt="Oso 2">`;
+      img2.onclick = function () {
+        window.location.href = "cine.html"; // Redirige a cine.html
+      };
+      imagenesDiv.appendChild(img2);
+
+      document.body.appendChild(imagenesDiv);
+    }
+  </script>
+
+</body>
+</html>
